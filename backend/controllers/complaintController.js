@@ -72,17 +72,61 @@ export const getStalePendingComplaints = async (req, res) => {
 
 
 
-export const getStudentComplaints = async (req, res) => {
-    try {
-      const studentId = req.user._id;
-  
-      const complaints = await Complaint.find({ student: studentId }).populate('worker', 'name field');
-  
-      res.status(200).json(complaints);
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching student complaints', error: error.message });
+export const getPendingComplaintsByStudent = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+
+    const complaints = await Complaint.find({
+      student: studentId,
+      status: 'Pending'
+    }).populate('worker', 'name field');
+
+    res.status(200).json(complaints);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching pending complaints', error: error.message });
+  }
+};
+
+export const getResolvedComplaintsByStudent = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+
+    const complaints = await Complaint.find({
+      student: studentId,
+      status: 'Resolved'
+    }).populate('worker', 'name field');
+
+    res.status(200).json(complaints);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching resolved complaints', error: error.message });
+  }
+};
+
+export const addComplaintFeedback = async (req, res) => {
+  const studentId = req.user._id;
+  const { complaintId } = req.params;
+  const { rating, comment } = req.body;
+
+  try {
+    const complaint = await Complaint.findOne({
+      _id: complaintId,
+      student: studentId,
+      status: 'Resolved'  // Only allow feedback on resolved complaints
+    });
+
+    if (!complaint) {
+      return res.status(404).json({ message: 'Complaint not found or not resolved yet' });
     }
-  };
+
+    complaint.feedback = { rating, comment };
+    await complaint.save();
+
+    res.status(200).json({ message: 'Feedback submitted successfully', complaint });
+  } catch (error) {
+    res.status(500).json({ message: 'Error submitting feedback', error: error.message });
+  }
+};
+
   
 
   export const getWorkerComplaints = async (req, res) => {
@@ -99,3 +143,60 @@ export const getStudentComplaints = async (req, res) => {
     }
   };
   
+
+  
+export const updateComplaintStatusByWorker = async (req, res) => {
+  try {
+    const workerId = req.user._id; // coming from the JWT token
+    const { id } = req.params; // complaint ID
+
+    const complaint = await Complaint.findById(id);
+
+    if (!complaint) {
+      return res.status(404).json({ message: 'Complaint not found' });
+    }
+
+    // Only update if the complaint is still pending
+    if (complaint.status === 'Resolved') {
+      return res.status(400).json({ message: 'Complaint already resolved' });
+    }
+
+    // Update complaint
+    complaint.status = 'Resolved';
+    complaint.worker = workerId;
+    complaint.resolvedAt = new Date();
+
+    await complaint.save();
+
+    res.status(200).json({
+      message: 'Complaint marked as resolved',
+      complaint,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating complaint', error: error.message });
+  }
+};
+
+export const adminUpdateComplaintStatus = async (req, res) => {
+  const { complaintId } = req.params;
+  const { status } = req.body;
+
+  try {
+    const complaint = await Complaint.findById(complaintId);
+    if (!complaint) {
+      return res.status(404).json({ message: 'Complaint not found' });
+    }
+
+    complaint.status = status;
+
+    if (status === 'Resolved') {
+      complaint.resolvedAt = new Date();
+    }
+
+    await complaint.save();
+
+    res.status(200).json({ message: 'Complaint status updated by admin', complaint });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating complaint status', error: error.message });
+  }
+};

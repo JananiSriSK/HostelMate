@@ -1,5 +1,5 @@
 import express from 'express';
-import { createComplaint, getStudentComplaints , getWorkerComplaints, getPendingComplaints, getResolvedComplaints, getStalePendingComplaints} from '../controllers/complaintController.js';
+import { createComplaint ,adminUpdateComplaintStatus, addComplaintFeedback, getPendingComplaintsByStudent, getResolvedComplaintsByStudent, getWorkerComplaints, getPendingComplaints, getResolvedComplaints, getStalePendingComplaints, updateComplaintStatusByWorker} from '../controllers/complaintController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { isAdmin } from '../middleware/adminMiddleware.js';
 
@@ -8,16 +8,23 @@ const complaintrouter = express.Router();
 
 
 complaintrouter.post('/', protect, createComplaint);
-complaintrouter.get('/my', protect, getStudentComplaints);
+complaintrouter.get('/student/pending', protect, getPendingComplaintsByStudent);
+complaintrouter.get('/student/resolved', protect, getResolvedComplaintsByStudent);
+complaintrouter.put('/:complaintId/feedback', protect, addComplaintFeedback);
+
 
 
 complaintrouter.get('/pending', protect, isAdmin, getPendingComplaints);
 complaintrouter.get('/resolved', protect, isAdmin, getResolvedComplaints);
 complaintrouter.get('/pending-stale', protect, isAdmin, getStalePendingComplaints);
+complaintrouter.put('/admin/:complaintId/status', protect, isAdmin, adminUpdateComplaintStatus);
+
 
 
 
 complaintrouter.get('/worker', protect, getWorkerComplaints);
+complaintrouter.put('/:id/resolve', protect, updateComplaintStatusByWorker);
+
 
 
 export default complaintrouter;

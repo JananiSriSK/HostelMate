@@ -8,6 +8,10 @@ import Complaint from './models/Complaint.js';
 import router from './routes/authRoutes.js';
 import connectDB from './config/db.js';
 import complaintrouter from './routes/complaintRoutes.js';
+import workerRoutes from './routes/workerRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
+
+
 // Load environment variables
 dotenv.config();
 
@@ -24,6 +28,8 @@ connectDB();
 // Routes
 app.use('/api/auth', router);
 app.use('/api/complaints', complaintrouter);
+app.use('/api/admin/workers', workerRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {

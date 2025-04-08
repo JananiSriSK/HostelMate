@@ -33,21 +33,29 @@ export const studentSignup = async (req, res) => {
     res.status(500).json({ message: 'Signup failed', error: err.message });
   }
 };
-
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    let user = await Student.findOne({ email }).select('+password');
+    // Look in Student model
+    let user = await Student.findOne({
+      $or: [{ email }, { mobile: email }]
+    }).select('+password');
     let role = 'student';
 
+    // If not found in students, look in workers
     if (!user) {
-      user = await Worker.findOne({ email }).select('+password');
+      user = await Worker.findOne({
+        $or: [{ email }, { mobile: email }]
+      }).select('+password');
       role = 'worker';
     }
 
+    // If not found in workers, look in admins
     if (!user) {
-      user = await Admin.findOne({ email }).select('+password');
+      user = await Admin.findOne({
+        $or: [{ email }, { mobile: email }]
+      }).select('+password');
       role = 'admin';
     }
 
@@ -63,15 +71,14 @@ export const login = async (req, res) => {
     const token = jwt.sign({ id: user._id, role }, process.env.JWT_SECRET, {
       expiresIn: '7d',
     });
-    console.log('User found:', user);
-    console.log('Password match:', isMatch);
-    
+
     res.status(200).json({
       token,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
+        mobile: user.mobile,
         role,
       },
     });
