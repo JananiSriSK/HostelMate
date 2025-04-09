@@ -20,7 +20,7 @@ export const addWorker = async (req, res) => {
 
 export const getAllWorkers = async (req, res) => {
   try {
-    const workers = await Worker.find().select('-password'); // hide password
+    const workers = await Worker.find().select('-password').sort({ createdAt: 1 }); 
     res.status(200).json(workers);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching workers', error: error.message });

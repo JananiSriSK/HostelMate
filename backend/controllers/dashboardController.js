@@ -12,7 +12,7 @@ export const getDashboardSummary = async (req, res) => {
       status: 'Pending',
       createdAt: { $lte: threeDaysAgo }
     });
-
+    
     const totalWorkers = await Worker.countDocuments();
     const totalStudents = await Student.countDocuments();
 

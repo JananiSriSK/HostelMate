@@ -33,6 +33,7 @@ export const studentSignup = async (req, res) => {
     res.status(500).json({ message: 'Signup failed', error: err.message });
   }
 };
+
 export const login = async (req, res) => {
   const { email, password } = req.body;
 

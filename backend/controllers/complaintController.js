@@ -31,6 +31,7 @@ export const createComplaint = async (req, res) => {
 export const getPendingComplaints = async (req, res) => {
   try {
     const complaints = await Complaint.find({ status: 'Pending' })
+      .sort({ createdAt: 1 })
       .populate('student', 'name email')
       .populate('worker', 'name field');
 
@@ -43,6 +44,7 @@ export const getPendingComplaints = async (req, res) => {
 export const getResolvedComplaints = async (req, res) => {
   try {
     const complaints = await Complaint.find({ status: 'Resolved' })
+      .sort({ resolvedAt: -1 })
       .populate('student', 'name email')
       .populate('worker', 'name field');
 
@@ -61,6 +63,7 @@ export const getStalePendingComplaints = async (req, res) => {
       status: 'Pending',
       createdAt: { $lt: threeDaysAgo }
     })
+      .sort({ createdAt: 1 })
       .populate('student', 'name email')
       .populate('worker', 'name field');
 
@@ -79,7 +82,9 @@ export const getPendingComplaintsByStudent = async (req, res) => {
     const complaints = await Complaint.find({
       student: studentId,
       status: 'Pending'
-    }).populate('worker', 'name field');
+    })
+    .sort({ createdAt: 1 })
+    .populate('worker', 'name field');
 
     res.status(200).json(complaints);
   } catch (error) {
@@ -94,7 +99,9 @@ export const getResolvedComplaintsByStudent = async (req, res) => {
     const complaints = await Complaint.find({
       student: studentId,
       status: 'Resolved'
-    }).populate('worker', 'name field');
+    })
+    .sort({ resolvedAt: -1 })
+    .populate('worker', 'name field');
 
     res.status(200).json(complaints);
   } catch (error) {
@@ -135,7 +142,9 @@ export const addComplaintFeedback = async (req, res) => {
   
       const complaints = await Complaint.find({
         issueCategory: workerField
-      }).populate('student', 'name email');
+      })
+      .sort({ createdAt: 1 })
+      .populate('student', 'name email');
   
       res.status(200).json(complaints);
     } catch (error) {
@@ -158,7 +167,7 @@ export const updateComplaintStatusByWorker = async (req, res) => {
 
     // Only update if the complaint is still pending
     if (complaint.status === 'Resolved') {
-      return res.status(400).json({ message: 'Complaint already resolved' });
+      return res.status(200).json({ message: 'Complaint already resolved' });
     }
 
     // Update complaint
@@ -177,9 +186,10 @@ export const updateComplaintStatusByWorker = async (req, res) => {
   }
 };
 
+
+
 export const adminUpdateComplaintStatus = async (req, res) => {
   const { complaintId } = req.params;
-  const { status } = req.body;
 
   try {
     const complaint = await Complaint.findById(complaintId);
@@ -187,15 +197,12 @@ export const adminUpdateComplaintStatus = async (req, res) => {
       return res.status(404).json({ message: 'Complaint not found' });
     }
 
-    complaint.status = status;
-
-    if (status === 'Resolved') {
-      complaint.resolvedAt = new Date();
-    }
+    complaint.status = 'Resolved';
+    complaint.resolvedAt = new Date();
 
     await complaint.save();
 
-    res.status(200).json({ message: 'Complaint status updated by admin', complaint });
+    res.status(200).json({ message: 'Complaint marked as resolved by admin', complaint });
   } catch (error) {
     res.status(500).json({ message: 'Error updating complaint status', error: error.message });
   }
