@@ -1,6 +1,4 @@
   import mongoose from 'mongoose';
-  import Student from './Student.js';
-  import Worker from './Worker.js';
   const complaintSchema = new mongoose.Schema({
     student: {
       type: mongoose.Schema.Types.ObjectId,
