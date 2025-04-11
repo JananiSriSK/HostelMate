@@ -26,55 +26,36 @@ const Signup = () => {
             </div>
 
             <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-              Create an Account
+              Login to your account
             </h2>
 
             <form className="space-y-4">
               <input
-                type="text"
-                placeholder="Username"
-                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none"
-                required
-              />
-              <input
                 type="email"
                 placeholder="Email"
-                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none "
-                required
-              />
-              <input
-                type="tel"
-                placeholder="Mobile"
-                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none "
+                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none"
                 required
               />
               <input
                 type="password"
                 placeholder="Password"
-                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none "
-                required
-              />
-              <input
-                type="password"
-                placeholder="Confirm Password"
                 className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none"
                 required
               />
-
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="w-40 bg-red-600 text-white font-semibold py-2 rounded hover:bg-red-700"
+                  className="w-40 bg-red-600 text-white font-semibold py-2 rounded hover:bg-red-700 "
                 >
-                  Signup
+                  Login
                 </button>
               </div>
             </form>
 
             <p className="text-sm text-center text-gray-600 mt-4">
-              Already have an account?{" "}
-              <Link to="/" className="text-red-600 hover:underline">
-                Login
+              New user?{" "}
+              <Link to="/register" className="text-red-600 hover:underline ">
+                Sign up
               </Link>
             </p>
           </div>

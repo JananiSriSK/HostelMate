@@ -37,9 +37,7 @@ const ComplaintForm = () => {
     };
 
     console.log("Form submitted:", finalData);
-    // You can replace the console.log with your API/database call
 
-    // Reset form after submission
     setFormData(initialState);
   };
 
@@ -64,7 +62,7 @@ const ComplaintForm = () => {
               placeholder="Enter your name"
               value={formData.name}
               onChange={handleChange}
-              className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
             />
           </div>
 
@@ -80,7 +78,7 @@ const ComplaintForm = () => {
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
-              className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
             />
           </div>
 
@@ -96,7 +94,7 @@ const ComplaintForm = () => {
               placeholder="Enter your roll number"
               value={formData.rollNumber}
               onChange={handleChange}
-              className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
             />
           </div>
 
@@ -112,7 +110,7 @@ const ComplaintForm = () => {
               placeholder="Enter your block name"
               value={formData.block}
               onChange={handleChange}
-              className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
             />
           </div>
 
@@ -128,7 +126,7 @@ const ComplaintForm = () => {
               placeholder="Enter your room number"
               value={formData.roomNumber}
               onChange={handleChange}
-              className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
             />
           </div>
 
@@ -145,7 +143,7 @@ const ComplaintForm = () => {
               required
               value={formData.issueCategory}
               onChange={handleChange}
-              className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
             >
               <option value="">Select Category</option>
               <option value="Electrical">Electrical</option>
@@ -169,7 +167,7 @@ const ComplaintForm = () => {
                 placeholder="Specify your issue"
                 value={formData.otherIssue}
                 onChange={handleChange}
-                className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
               />
             </div>
           )}
@@ -185,7 +183,7 @@ const ComplaintForm = () => {
               placeholder="Briefly describe your complaint"
               value={formData.subject}
               onChange={handleChange}
-              className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
             />
           </div>
 
@@ -199,7 +197,7 @@ const ComplaintForm = () => {
               type="file"
               required
               onChange={handleChange}
-              className="w-full border rounded-md px-4 py-2 
+              className="w-full border border-gray-300 rounded-md px-4 py-2 
                 file:mr-4 file:border file:border-gray-300 
                 file:rounded-md file:px-3 file:py-1 
                 file:bg-white file:text-gray-700 
@@ -218,16 +216,18 @@ const ComplaintForm = () => {
               placeholder="Provide more information about your complaint"
               value={formData.details}
               onChange={handleChange}
-              className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[150px]"
+              className="border border-gray-300 border-gray-300rounded-md px-4 py-2 focus:outline-none  min-h-[150px] "
             />
           </div>
 
+          {/* <div className="flex justify-center"> */}
           <button
             type="submit"
             className="bg-[#a80000] hover:bg-[#800000] text-white font-medium py-2 px-4 rounded-md"
           >
             Submit Complaint
           </button>
+          {/* </div> */}
         </form>
       </div>
     </div>
