@@ -1,5 +1,5 @@
 import express from 'express';
-import { createComplaint ,adminUpdateComplaintStatus, addComplaintFeedback, getPendingComplaintsByStudent, getResolvedComplaintsByStudent, getWorkerComplaints, getPendingComplaints, getResolvedComplaints, getStalePendingComplaints, updateComplaintStatusByWorker} from '../controllers/complaintController.js';
+import { createComplaint ,adminUpdateComplaintStatus, addComplaintFeedback, getComplaintsByStudent, getWorkerComplaints, getPendingComplaints, getResolvedComplaints, getStalePendingComplaints, updateComplaintStatusByWorker} from '../controllers/complaintController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { isAdmin } from '../middleware/adminMiddleware.js';
 
@@ -8,8 +8,7 @@ const complaintrouter = express.Router();
 
 
 complaintrouter.post('/', protect, createComplaint);
-complaintrouter.get('/student/pending', protect, getPendingComplaintsByStudent);
-complaintrouter.get('/student/resolved', protect, getResolvedComplaintsByStudent);
+complaintrouter.get('/student', protect, getComplaintsByStudent);
 complaintrouter.put('/:complaintId/feedback', protect, addComplaintFeedback);
 
 

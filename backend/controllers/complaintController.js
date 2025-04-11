@@ -75,13 +75,12 @@ export const getStalePendingComplaints = async (req, res) => {
 
 
 
-export const getPendingComplaintsByStudent = async (req, res) => {
+export const getComplaintsByStudent = async (req, res) => {
   try {
     const studentId = req.user._id;
 
     const complaints = await Complaint.find({
       student: studentId,
-      status: 'Pending'
     })
     .sort({ createdAt: 1 })
     .populate('worker', 'name field');
@@ -92,22 +91,6 @@ export const getPendingComplaintsByStudent = async (req, res) => {
   }
 };
 
-export const getResolvedComplaintsByStudent = async (req, res) => {
-  try {
-    const studentId = req.user._id;
-
-    const complaints = await Complaint.find({
-      student: studentId,
-      status: 'Resolved'
-    })
-    .sort({ resolvedAt: -1 })
-    .populate('worker', 'name field');
-
-    res.status(200).json(complaints);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching resolved complaints', error: error.message });
-  }
-};
 
 export const addComplaintFeedback = async (req, res) => {
   const studentId = req.user._id;
