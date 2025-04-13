@@ -1,6 +1,8 @@
+import axios from "axios";
 import React, { useState } from "react";
 
 const FeedbackForm = () => {
+
   const [form, setForm] = useState({
     complaintId: "",
     rating: "",
@@ -11,8 +13,9 @@ const FeedbackForm = () => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    // const feedback = await axios.put(`http://localhost:5000/api/complaints/${}`)
     console.log("Feedback submitted:", form);
     alert("Thank you for your feedback!");
     setForm({ complaintId: "", rating: "", comments: "" });

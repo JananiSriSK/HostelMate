@@ -1,7 +1,15 @@
-import React from "react";
-import ComplaintForm from "./ComplaintForm";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const DashboardHome = () => {
+  const navigate  = useNavigate();
+
+  useEffect(()=>{
+    if(localStorage.length === 0)
+      navigate('/');
+  },[]);
+
+
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 rounded-lg shadow-md">

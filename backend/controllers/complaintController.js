@@ -82,7 +82,7 @@ export const getComplaintsByStudent = async (req, res) => {
     const complaints = await Complaint.find({
       student: studentId,
     })
-    .sort({ createdAt: 1 })
+    .sort({ createdAt: -1 })
     .populate('worker', 'name field');
 
     res.status(200).json(complaints);
@@ -101,7 +101,7 @@ export const addComplaintFeedback = async (req, res) => {
     const complaint = await Complaint.findOne({
       _id: complaintId,
       student: studentId,
-      status: 'Resolved'  // Only allow feedback on resolved complaints
+      status: 'Resolved' 
     });
 
     if (!complaint) {

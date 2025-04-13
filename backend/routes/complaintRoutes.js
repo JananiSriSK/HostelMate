@@ -7,7 +7,7 @@ import { isAdmin } from '../middleware/adminMiddleware.js';
 const complaintrouter = express.Router();
 
 
-complaintrouter.post('/', protect, createComplaint);
+complaintrouter.post('/',protect,createComplaint);
 complaintrouter.get('/student', protect, getComplaintsByStudent);
 complaintrouter.put('/:complaintId/feedback', protect, addComplaintFeedback);
 

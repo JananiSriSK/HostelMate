@@ -9,14 +9,25 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 const StudentLayout = () => {
+
+  const navigate = useNavigate();
   const user = {
     name: "Tom Cook",
     email: "tom@example.com",
     imageUrl: "https://via.placeholder.com/150",
   };
+
+  const handlenav = (name) =>{
+    if(name === "Signout")
+    {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");      
+      navigate('/');
+    }
+  }
 
   const navigation = [
     { name: "Dashboard", href: "/student" },
@@ -26,11 +37,10 @@ const StudentLayout = () => {
   ];
 
   const userNavigation = [
-    { name: "Your Profile", href: "#" },
-    { name: "Sign out", href: "#" },
+    { name: "Your Profile"},
+    { name: "Signout"},
   ];
 
-  const classNames = (...classes) => classes.filter(Boolean).join(" ");
 
   return (
     <div className="min-h-full">
@@ -39,7 +49,6 @@ const StudentLayout = () => {
           <>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="flex h-16 items-center justify-between">
-                {/* Left section */}
                 <div className="flex items-center">
                   <img
                     className="h-8 w-8"
@@ -79,14 +88,19 @@ const StudentLayout = () => {
                     </MenuButton>
                     <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right bg-white rounded-md py-1 ring-1 ring-black/5 shadow-lg">
                       {userNavigation.map((item) => (
-                        <MenuItem key={item.name}>
-                          <Link
-                            to={item.href}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            {item.name}
-                          </Link>
-                        </MenuItem>
+                        // <MenuItem key={item.name}>
+                        //   <Link
+                        //     to={item.href}
+                        //     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        //   >
+                        //     {item.name}
+                        //   </Link>
+                        // </MenuItem>
+                        <button key={item.name}
+                        onClick={() => handlenav(item.name)}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          {item.name}
+                        </button>
                       ))}
                     </MenuItems>
                   </Menu>

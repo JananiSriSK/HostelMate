@@ -1,44 +1,65 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ComplaintForm = () => {
-  const initialState = {
-    name: "",
-    email: "",
-    rollNumber: "",
-    block: "",
-    roomNumber: "",
-    subject: "",
-    image: null,
-    details: "",
-    issueCategory: "",
-    otherIssue: "",
-  };
+  const navigate = useNavigate();
 
-  const [formData, setFormData] = useState(initialState);
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "image") {
-      setFormData({ ...formData, [name]: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
     }
-  };
+  }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const [issueCategory, setIssueCategory] = useState("");
+  const [location, setLocation] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState("Low");
 
-    const finalData = {
-      ...formData,
-      issueCategory:
-        formData.issueCategory === "Other"
-          ? formData.otherIssue
-          : formData.issueCategory,
-    };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-    console.log("Form submitted:", finalData);
+    try {
+      const token = localStorage.getItem("token");
 
-    setFormData(initialState);
+      if (!token) {
+        alert("Unauthorized: Please log in again.");
+        navigate("/");
+        return;
+      }
+
+      const complaintData = {
+        issueCategory,
+        location,
+        description,
+        priority,
+      };
+
+      const response = await axios.post(
+        "http://localhost:5000/api/complaints",
+        complaintData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Complaint submitted successfully:", response.data);
+      alert("Complaint submitted successfully!");
+
+      setIssueCategory("");
+      setLocation("");
+      setDescription("");
+      setPriority("Low");
+      navigate('/student/my-complaints')
+
+    } catch (error) {
+      console.error("Complaint submission error:", error.response || error);
+      alert("Failed to submit complaint");
+    }
   };
 
   return (
@@ -46,104 +67,20 @@ const ComplaintForm = () => {
       <div className="p-6">
         <h2 className="text-2xl font-bold mb-0">File a Complaint</h2>
         <p className="text-gray-500 mb-6">
-          We take your feedback seriously. Please provide the details of your
-          complaint below.
+          We take your feedback seriously. Please provide the details of your complaint below.
         </p>
         <form className="grid gap-4" onSubmit={handleSubmit}>
+          {/* Issue Category */}
           <div className="grid gap-2">
-            <label htmlFor="name" className="text-gray-700 font-medium">
-              Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              required
-              placeholder="Enter your name"
-              value={formData.name}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <label htmlFor="email" className="text-gray-700 font-medium">
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <label htmlFor="rollNumber" className="text-gray-700 font-medium">
-              Roll Number
-            </label>
-            <input
-              id="rollNumber"
-              name="rollNumber"
-              type="text"
-              required
-              placeholder="Enter your roll number"
-              value={formData.rollNumber}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <label htmlFor="block" className="text-gray-700 font-medium">
-              Block Name
-            </label>
-            <input
-              id="block"
-              name="block"
-              type="text"
-              required
-              placeholder="Enter your block name"
-              value={formData.block}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <label htmlFor="roomNumber" className="text-gray-700 font-medium">
-              Room Number
-            </label>
-            <input
-              id="roomNumber"
-              name="roomNumber"
-              type="text"
-              required
-              placeholder="Enter your room number"
-              value={formData.roomNumber}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <label
-              htmlFor="issueCategory"
-              className="text-gray-700 font-medium"
-            >
+            <label htmlFor="issueCategory" className="text-gray-700 font-medium">
               Issue Category
             </label>
             <select
               id="issueCategory"
-              name="issueCategory"
+              value={issueCategory}
+              onChange={(e) => setIssueCategory(e.target.value)}
               required
-              value={formData.issueCategory}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
+              className="border border-gray-300 rounded-md px-4 py-2"
             >
               <option value="">Select Category</option>
               <option value="Electrical">Electrical</option>
@@ -154,80 +91,62 @@ const ComplaintForm = () => {
             </select>
           </div>
 
-          {formData.issueCategory === "Other" && (
-            <div className="grid gap-2">
-              <label htmlFor="otherIssue" className="text-gray-700 font-medium">
-                Please specify
-              </label>
-              <input
-                id="otherIssue"
-                name="otherIssue"
-                type="text"
-                required
-                placeholder="Specify your issue"
-                value={formData.otherIssue}
-                onChange={handleChange}
-                className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
-              />
-            </div>
-          )}
+          {/* Location */}
           <div className="grid gap-2">
-            <label htmlFor="subject" className="text-gray-700 font-medium">
-              Subject
+            <label htmlFor="location" className="text-gray-700 font-medium">
+              Location
             </label>
             <input
-              id="subject"
-              name="subject"
               type="text"
+              id="location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
               required
-              placeholder="Briefly describe your complaint"
-              value={formData.subject}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none "
+              placeholder="Eg. Room 102, Block B"
+              className="border border-gray-300 rounded-md px-4 py-2"
             />
           </div>
 
+          {/* Description */}
           <div className="grid gap-2">
-            <label htmlFor="image" className="text-gray-700 font-medium">
-              Image of the Problem
-            </label>
-            <input
-              id="image"
-              name="image"
-              type="file"
-              required
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-4 py-2 
-                file:mr-4 file:border file:border-gray-300 
-                file:rounded-md file:px-3 file:py-1 
-                file:bg-white file:text-gray-700 
-                file:cursor-pointer cursor-pointer"
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <label htmlFor="details" className="text-gray-700 font-medium">
-              Details
+            <label htmlFor="description" className="text-gray-700 font-medium">
+              Description
             </label>
             <textarea
-              id="details"
-              name="details"
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               required
-              placeholder="Provide more information about your complaint"
-              value={formData.details}
-              onChange={handleChange}
-              className="border border-gray-300 border-gray-300rounded-md px-4 py-2 focus:outline-none  min-h-[150px] "
+              placeholder="Explain the issue in detail"
+              className="border border-gray-300 rounded-md px-4 py-2 min-h-[100px]"
             />
           </div>
 
-          {/* <div className="flex justify-center"> */}
+          {/* Priority */}
+          <div className="grid gap-2">
+            <label htmlFor="priority" className="text-gray-700 font-medium">
+              Priority
+            </label>
+            <select
+              id="priority"
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
+              className="border border-gray-300 rounded-md px-4 py-2"
+            >
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Emergency">Emergency</option>
+            </select>
+          </div>
+
+          {/* Submit */}
           <button
             type="submit"
             className="bg-[#a80000] hover:bg-[#800000] text-white font-medium py-2 px-4 rounded-md"
           >
             Submit Complaint
           </button>
-          {/* </div> */}
         </form>
       </div>
     </div>

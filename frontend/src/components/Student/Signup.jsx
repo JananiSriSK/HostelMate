@@ -1,9 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import cegImage from "../../assets/ceg.jpg";
 import Navbar from "../common/Navbar";
+import axios from 'axios';
 
 const Signup = () => {
+
+  const [userName,setuserName] = useState('');
+  const [email,setEmail] = useState('');
+  const [mobile,setMobile] = useState('');
+  const [password,setPassword] = useState('');
+  const [cpassword,setCpassword] = useState('');
+  const [hostelName,setHostelName] = useState('');
+  const [roomNo,setRoomNo] = useState('');
+  const [regNo,setregNo] = useState('');
+
+
+
+  const handleSignup = async(e) =>{
+    e.preventDefault();
+    alert("Form sunbmitted");
+    
+    if(password !== cpassword)
+    {
+      alert("Password and Confirm Password should be same");
+    }
+
+    await axios.post("http://localhost:5000/api/auth/signup",{
+      name:userName,
+      email:email,
+      password:password,
+      mobile:mobile,
+      registerNumber:regNo,
+      hostelBlock:hostelName,
+      roomNumber:roomNo
+    })
+    .then(data => {
+      console.log(data)})
+    .catch((err) => {console.log(err);
+    })
+  }
+
   return (
     <>
       <Navbar />
@@ -19,7 +56,7 @@ const Signup = () => {
           <div className="w-full max-w-md">
             <div className="flex justify-center mb-6">
               <img
-                src="https://upload.wikimedia.org/wikipedia/en/thumb/4/49/Anna_University_Logo.svg/640px-Anna_University_Logo.svg.png" // Add your university logo here
+                src="https://upload.wikimedia.org/wikipedia/en/thumb/4/49/Anna_University_Logo.svg/640px-Anna_University_Logo.svg.png"
                 alt="University Logo"
                 className="h-16"
               />
@@ -34,37 +71,63 @@ const Signup = () => {
                 type="text"
                 placeholder="Username"
                 className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none"
+                onChange={(e)=>{setuserName(e.target.value)}}
                 required
               />
               <input
                 type="email"
                 placeholder="Email"
                 className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none "
+                onChange={(e)=>{setEmail(e.target.value)}}
                 required
               />
               <input
                 type="tel"
                 placeholder="Mobile"
                 className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none "
+                onChange={(e)=>{setMobile(e.target.value)}}
                 required
               />
               <input
                 type="password"
                 placeholder="Password"
                 className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none "
+                onChange={(e)=>{setPassword(e.target.value)}}
                 required
               />
               <input
                 type="password"
                 placeholder="Confirm Password"
                 className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none"
+                onChange={(e)=>{setCpassword(e.target.value)}}
+                required
+              />
+              <input
+                type="text"
+                placeholder="RegisterNumber"
+                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none"
+                onChange={(e)=>{setregNo(e.target.value)}}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Room No"
+                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none"
+                onChange={(e)=>{setRoomNo(e.target.value)}}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Hostel Block Name"
+                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none"
+                onChange={(e)=>{setHostelName(e.target.value)}}
                 required
               />
 
               <div className="flex justify-center">
                 <button
-                  type="submit"
                   className="w-40 bg-red-600 text-white font-semibold py-2 rounded hover:bg-red-700"
+                  onClick={handleSignup}
                 >
                   Signup
                 </button>

@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import Worker from './models/Worker.js';
 import Admin from './models/Admin.js';
 dotenv.config();
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hostelmate';
+const MONGO_URI = 'mongodb://127.0.0.1:27017/Hostelmate';
 
 const seedData = async () => {
   try {

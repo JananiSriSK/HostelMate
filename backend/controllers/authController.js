@@ -6,9 +6,9 @@ import bcrypt from 'bcryptjs';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 
-// Student Sign Up
 export const studentSignup = async (req, res) => {
   const { name, email, password, mobile, registerNumber, hostelBlock, roomNumber } = req.body;
+  console.log(name, email, password, mobile, registerNumber, hostelBlock, roomNumber);
 
   try {
     const existing = await Student.findOne({ email });
@@ -27,7 +27,7 @@ export const studentSignup = async (req, res) => {
     await student.save();
 
     const token = jwt.sign({ id: student._id, role: 'student' }, JWT_SECRET, { expiresIn: '1d' });
-
+    
     res.status(201).json({ token, user: { id: student._id, name: student.name, role: 'student' } });
   } catch (err) {
     res.status(500).json({ message: 'Signup failed', error: err.message });
@@ -35,7 +35,7 @@ export const studentSignup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body;  
 
   try {
     // Look in Student model

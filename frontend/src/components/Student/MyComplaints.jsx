@@ -1,68 +1,97 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const MyComplaints = () => {
-  const complaints = [
-    {
-      id: 1,
-      title: "Leaking tap in bathroom",
-      date: "2025-04-08",
-      status: "Resolved",
-    },
-    {
-      id: 2,
-      title: "Broken ceiling fan",
-      date: "2025-04-09",
-      status: "Pending",
-    },
-    {
-      id: 3,
-      title: "Power outage on 2nd floor",
-      date: "2025-04-05",
-      status: "Resolved",
-    },
-  ];
 
-  const [feedbackForms, setFeedbackForms] = useState({}); // Tracks visibility & values
+  const navigate = useNavigate();
 
-  const handleInputChange = (e, id) => {
-    const { name, value } = e.target;
-    setFeedbackForms((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        [name]: value,
-      },
-    }));
-  };
+  const  [complaints,setComplaints] = useState([]);
 
-  const handleSubmit = (e, id) => {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchComplaints = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:5000/api/complaints/student", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+  
+        const complaintsArray = Object.values(response.data);
+        console.log(response.data);
+
+        setComplaints(complaintsArray);
+      } catch (error) {
+        console.error("Error fetching complaints:", error);
+      }
+    };
+  
+    fetchComplaints();
+  }, []);
+  
+
+  const [rating, setRating] = useState('');
+  const [comment, setComment] = useState('');
+  const[isfeed,setIsFeed] = useState(false);
+
+  const handleSubmit = async(e, id) => {
     e.preventDefault();
-    console.log("Feedback for complaint ID", id, feedbackForms[id]);
-    alert("Thank you for your feedback!");
-    setFeedbackForms((prev) => ({ ...prev, [id]: undefined }));
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(`http://localhost:5000/api/complaints/${id}/feedback`,
+        {rating:rating,
+        comment:comment},
+        {
+          headers:
+          {
+            Authorization:`Bearer ${token}`
+          }
+        }
+      )
+      // console.log("Feedback for complaint ID");
+      alert("Thank you for your feedback!");
+      setComment("");
+      setRating("");
+      setIsFeed(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const toggleForm = (id) => {
-    setFeedbackForms((prev) => ({
-      ...prev,
-      [id]: prev[id] ? undefined : { rating: "", comments: "" },
-    }));
+    if(isfeed === true)
+    {
+      setIsFeed(false);
+    }
+    else{
+      setIsFeed(true);
+    }
+    setComment("");
+    setRating("");
   };
 
   return (
     <div className="space-y-6">
       {complaints.map((complaint) => (
         <div
-          key={complaint.id}
+          key={complaint._id}
           className="bg-white p-6 rounded-lg shadow-md space-y-4"
         >
           <div className="flex justify-between items-center">
             <div>
               <h3 className="text-lg font-semibold text-gray-800">
-                {complaint.title}
+                {complaint.description}
               </h3>
               <p className="text-sm text-gray-500">
-                Submitted on {complaint.date}
+                Submitted on {complaint.createdAt}
               </p>
             </div>
             <span
@@ -79,17 +108,17 @@ const MyComplaints = () => {
           {complaint.status === "Resolved" && (
             <div>
               <button
-                onClick={() => toggleForm(complaint.id)}
+                onClick={() => toggleForm()}
                 className="text-sm text-[#a80000] font-medium hover:underline"
               >
-                {feedbackForms[complaint.id]
+                {isfeed
                   ? "Hide Feedback Form"
                   : "Give Feedback"}
               </button>
 
-              {feedbackForms[complaint.id] && (
+              {isfeed && (
                 <form
-                  onSubmit={(e) => handleSubmit(e, complaint.id)}
+                  onSubmit={(e) => handleSubmit(e, complaint._id)}
                   className="mt-4 space-y-4"
                 >
                   <div>
@@ -98,8 +127,7 @@ const MyComplaints = () => {
                     </label>
                     <select
                       name="rating"
-                      value={feedbackForms[complaint.id]?.rating || ""}
-                      onChange={(e) => handleInputChange(e, complaint.id)}
+                      onChange={(e) => setRating(e.target.value)}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#a80000] focus:ring-[#a80000] sm:text-sm"
                       required
                     >
@@ -118,8 +146,7 @@ const MyComplaints = () => {
                     </label>
                     <textarea
                       name="comments"
-                      value={feedbackForms[complaint.id]?.comments || ""}
-                      onChange={(e) => handleInputChange(e, complaint.id)}
+                      onChange={(e) => setComment(e.target.value)}
                       rows="3"
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#a80000] focus:ring-[#a80000] sm:text-sm"
                     />

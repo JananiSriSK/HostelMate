@@ -2,22 +2,29 @@ import jwt from 'jsonwebtoken';
 import Student from '../models/Student.js';
 import Worker from '../models/Worker.js';
 import Admin from '../models/Admin.js';
+import { configDotenv } from 'dotenv';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+configDotenv();
+// const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+const JWT_SECRET =  process.env.JWT_SECRET;
 
 export const protect = async (req, res, next) => {
   const authHeader = req.headers.authorization;
+  console.log("Auth Header:", authHeader);
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'Unauthorized: No token provided' });
   }
 
   const token = authHeader.split(' ')[1];
+  console.log("Extracted Token:", token);
+
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log("Decoded JWT:", decoded);
 
-    // Try to find user in all 3 models
+
     let user =
       (await Student.findById(decoded.id).select('-password')) ||
       (await Worker.findById(decoded.id).select('-password')) ||
