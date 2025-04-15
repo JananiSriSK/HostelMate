@@ -89,8 +89,8 @@ cd backend/worker-api && npm run dev
 cd backend/admin-api && npm run dev
 
 
-#🧑‍💻 Team
-###HostelMate Dev Team:
+# 🧑‍💻 Team
+### HostelMate Dev Team:
 
 🎨 Janani Sri – Frontend Developer
 
@@ -98,10 +98,10 @@ cd backend/admin-api && npm run dev
 
 🔗 Kathir – Full Stack Integration
 
-#📄 License
+# 📄 License
 This project is licensed under the MIT License.
 
-#💬 Feedback & Contributions
+# 💬 Feedback & Contributions
 Found a bug? Have an idea?
 Open an issue or start a discussion — let’s collaborate with HostelMate!
 
