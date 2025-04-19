@@ -6,8 +6,9 @@ import connectDB from './config/db.js';
 import complaintrouter from './routes/complaintRoutes.js';
 import workerRoutes from './routes/workerRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
-
-
+import announcementRouter from './routes/announcementRoutes.js';
+import updateRouter from './routes/updateProfileRoutes.js';
+import authRouter from './routes/auth.js';
 // Load environment variables
 dotenv.config();
 
@@ -26,6 +27,9 @@ app.use('/api/auth', router);
 app.use('/api/complaints', complaintrouter);
 app.use('/api/admin/workers', workerRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/admin-announcement',announcementRouter);
+app.use('/api/updateprofile',updateRouter);
+app.use("/api/auth", authRouter);
 
 
 // Health check endpoint

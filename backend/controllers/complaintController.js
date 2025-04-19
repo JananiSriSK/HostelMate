@@ -26,7 +26,18 @@ export const createComplaint = async (req, res) => {
   }
 };
 
+export const getAllComplaints = async (req, res) => {
+  try {
+    const complaints = await Complaint.find({})
+      .sort({ createdAt: 1 })
+      .populate('student', 'name email')
+      .populate('worker', 'name field');
 
+    res.status(200).json(complaints);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching pending complaints', error: error.message });
+  }
+};
 
 export const getPendingComplaints = async (req, res) => {
   try {
@@ -124,7 +135,8 @@ export const addComplaintFeedback = async (req, res) => {
       const workerField = req.user.field;
   
       const complaints = await Complaint.find({
-        issueCategory: workerField
+        issueCategory: workerField,
+        status:'Pending'
       })
       .sort({ createdAt: 1 })
       .populate('student', 'name email');
@@ -141,17 +153,19 @@ export const updateComplaintStatusByWorker = async (req, res) => {
   try {
     const workerId = req.user._id; // coming from the JWT token
     const { id } = req.params; // complaint ID
-
+    console.log(workerId);
+    console.log(id);
+    
     const complaint = await Complaint.findById(id);
 
     if (!complaint) {
       return res.status(404).json({ message: 'Complaint not found' });
     }
 
-    // Only update if the complaint is still pending
-    if (complaint.status === 'Resolved') {
-      return res.status(200).json({ message: 'Complaint already resolved' });
-    }
+    // // Only update if the complaint is still pending
+    // if (complaint.status === 'Resolved') {
+    //   return res.status(200).json({ message: 'Complaint already resolved' });
+    // }
 
     // Update complaint
     complaint.status = 'Resolved';

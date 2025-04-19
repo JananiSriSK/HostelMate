@@ -2,7 +2,7 @@
 import Worker from "../models/Worker.js";
 
 export const addWorker = async (req, res) => {
-  const { name, email, password, field, mobile } = req.body;
+  const { name, email, password, field, mobile,employeeNumber } = req.body;
 
   try {
     const existing = await Worker.findOne({ email });
@@ -10,7 +10,7 @@ export const addWorker = async (req, res) => {
       return res.status(400).json({ message: 'Worker already exists' });
     }
 
-    const worker = await Worker.create({ name, email, password, field, mobile });
+    const worker = await Worker.create({ name, email, password, field, mobile,employeeNumber });
     res.status(201).json({ message: 'Worker added successfully', worker });
   } catch (error) {
     res.status(500).json({ message: 'Error adding worker', error: error.message });

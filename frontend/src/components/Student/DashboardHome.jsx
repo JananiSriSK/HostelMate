@@ -1,13 +1,49 @@
-import React, { useEffect } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const DashboardHome = () => {
   const navigate  = useNavigate();
+  const[announcements,setAnnouncements] = useState([]);
 
-  useEffect(()=>{
-    if(localStorage.length === 0)
-      navigate('/');
-  },[]);
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  if (!token) {
+      navigate("/");
+  }
+  else if(role === 'worker')
+  {
+  navigate('/worker');
+  }
+  else if(role === 'admin')
+  {
+    navigate('/admin');
+  }
+  }, []);
+
+  useEffect(() => {
+    const fetchComplaints = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get("http://localhost:5000/api/admin-announcement", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const announcement = Object.values(response.data);
+            console.log(announcement);
+
+            setAnnouncements(announcement);
+           
+        } catch (error) {
+            console.error("Error fetching complaints:", error);
+        }
+    };
+    fetchComplaints();
+}, []);
 
 
   return (
@@ -28,18 +64,11 @@ const DashboardHome = () => {
           Announcements
         </h2>
         <ol className="list-disc list-inside text-gray-700 space-y-2">
-          <li>
-            Maintenance work is scheduled in Block B on April 15th from 9 AM to
-            5 PM.
-          </li>
-          <li>
-            {" "}
-            New complaint submission deadlines will now close at 8 PM daily.
-          </li>
-          <li>
-            Feedback is now mandatory for resolved complaints to help improve
-            our service.
-          </li>
+          {announcements.map((announce)=>(
+            <li key={announce._id}>
+                {announce.announcement}
+            </li>
+          ))}
         </ol>
       </div>
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const MyComplaints = () => {
 
@@ -9,10 +10,19 @@ const MyComplaints = () => {
   const  [complaints,setComplaints] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  if (!token) {
       navigate("/");
-    }
+  }
+  else if(role === 'worker')
+  {
+  navigate('/worker');
+  }
+  else if(role === 'admin')
+  {
+    navigate('/admin');
+  }
   }, []);
 
   useEffect(() => {
@@ -58,6 +68,11 @@ const MyComplaints = () => {
       )
       // console.log("Feedback for complaint ID");
       alert("Thank you for your feedback!");
+      toast.success('Thank you for your feedback!', {duration: 4000,
+        position: 'top-right', style: {
+          marginTop: '50px',
+        }
+      });  
       setComment("");
       setRating("");
       setIsFeed(false);
@@ -65,15 +80,10 @@ const MyComplaints = () => {
       console.log(error);
     }
   };
-
+  const [current,setCurrent] = useState('');
   const toggleForm = (id) => {
-    if(isfeed === true)
-    {
-      setIsFeed(false);
-    }
-    else{
-      setIsFeed(true);
-    }
+    setCurrent(id);
+    setIsFeed(!isfeed);
     setComment("");
     setRating("");
   };
@@ -91,7 +101,7 @@ const MyComplaints = () => {
                 {complaint.description}
               </h3>
               <p className="text-sm text-gray-500">
-                Submitted on {complaint.createdAt}
+                Submitted on {complaint.createdAt.split("T")[0]}
               </p>
             </div>
             <span
@@ -108,15 +118,15 @@ const MyComplaints = () => {
           {complaint.status === "Resolved" && (
             <div>
               <button
-                onClick={() => toggleForm()}
+                onClick={() => toggleForm(complaint._id)}
                 className="text-sm text-[#a80000] font-medium hover:underline"
               >
-                {isfeed
+                {isfeed && complaint._id === current
                   ? "Hide Feedback Form"
                   : "Give Feedback"}
               </button>
 
-              {isfeed && (
+              {isfeed && complaint._id === current && (
                 <form
                   onSubmit={(e) => handleSubmit(e, complaint._id)}
                   className="mt-4 space-y-4"

@@ -80,7 +80,11 @@ export const login = async (req, res) => {
         name: user.name,
         email: user.email,
         mobile: user.mobile,
+        hostelBlock:user.hostelBlock,
+        roomNumber:user.roomNumber,
         role,
+        employeeNumber:user.employeeNumber,
+        field:user.field
       },
     });
   } catch (err) {

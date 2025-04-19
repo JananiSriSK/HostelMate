@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import cegImage from "../../assets/ceg.jpg";
 import Navbar from "../common/Navbar";
 import axios from 'axios';
+import toast from "react-hot-toast";
 
 const Signup = () => {
 
@@ -14,13 +15,12 @@ const Signup = () => {
   const [hostelName,setHostelName] = useState('');
   const [roomNo,setRoomNo] = useState('');
   const [regNo,setregNo] = useState('');
+  const navigate = useNavigate();
 
 
 
   const handleSignup = async(e) =>{
     e.preventDefault();
-    alert("Form sunbmitted");
-    
     if(password !== cpassword)
     {
       alert("Password and Confirm Password should be same");
@@ -36,15 +36,22 @@ const Signup = () => {
       roomNumber:roomNo
     })
     .then(data => {
+      toast.success('Registered successfully!', {duration: 4000,
+        position: 'top-right', style: {
+          marginTop: '50px',
+        }
+      });  
       console.log(data)})
     .catch((err) => {console.log(err);
     })
+    navigate('/');
+
   }
 
   return (
     <>
       <Navbar />
-      <div className="flex h-screen pt-16">
+      <div className="flex  pt-16">
         <div
           className="hidden md:block md:w-1/2 bg-cover bg-center"
           style={{
@@ -54,6 +61,8 @@ const Signup = () => {
 
         <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
           <div className="w-full max-w-md">
+          <div className="min-h-screen bg-white shadow-md rounded-xl p-6 border border-gray-200">
+
             <div className="flex justify-center mb-6">
               <img
                 src="https://upload.wikimedia.org/wikipedia/en/thumb/4/49/Anna_University_Logo.svg/640px-Anna_University_Logo.svg.png"
@@ -140,6 +149,7 @@ const Signup = () => {
                 Login
               </Link>
             </p>
+          </div>
           </div>
         </div>
       </div>

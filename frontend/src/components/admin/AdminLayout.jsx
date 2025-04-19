@@ -1,20 +1,19 @@
 import React, { useEffect } from "react";
 import {
   Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
   Menu,
   MenuButton,
   MenuItem,
   MenuItems,
-  DisclosureButton,
-  DisclosurePanel,
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
-const StudentLayout = () => {
+const AdminLayout = () => {
 
   const navigate = useNavigate();
-
     useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
@@ -25,38 +24,37 @@ const StudentLayout = () => {
     {
     navigate('/worker');
     }
-    else if(role === 'admin')
+    else if(role === 'student')
     {
-      navigate('/admin');
+      navigate('/student');
     }
     }, []);
 
-   const handlenav = (name) =>{
-    if(name === "Signout")
-    {
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");      
-      navigate('/');
-    }
-    else{
-      navigate('/student/updateprofile');
-    }
-  }
-
   const navigation = [
-    { name: "Dashboard", href: "/student" },
-    { name: "New Complaint", href: "/student/new-complaint" },
-    { name: "My Complaints", href: "/student/my-complaints" },
+    { name: "Dashboard", href: "/admin", current: false },
+    { name: "Complaints", href: "/admin/complaints", current: false },
+    { name: "Worker Information", href: "/admin/worker-info", current: false },
+    { name: "Announcement", href: "/admin/announcement", current: false },
+
   ];
 
   const userNavigation = [
-    { name: "Your Profile"},
-    { name: "Signout"},
+    { name: "Your Profile", href: "#" },
+    { name: "Signout", href: "/" },
   ];
 
+  const classNames = (...classes) => classes.filter(Boolean).join(" ");
+
+  const handleNav = (name, href) => {
+    if (name === "Signout") {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+    }
+    navigate(href);
+  };
 
   return (
-    <div className="min-h-full">
+    <div className="min-h-full ">
       <Disclosure as="nav" className="bg-[#a80000] fixed top-0 w-full z-50">
         {({ open }) => (
           <>
@@ -64,7 +62,7 @@ const StudentLayout = () => {
               <div className="flex h-16 items-center justify-between">
                 <div className="flex items-center">
                   <img
-                    className="h-8 w-8"
+                    className="size-8"
                     src="https://upload.wikimedia.org/wikipedia/en/thumb/4/49/Anna_University_Logo.svg/640px-Anna_University_Logo.svg.png"
                     alt="University Logo"
                   />
@@ -73,7 +71,12 @@ const StudentLayout = () => {
                       <Link
                         key={item.name}
                         to={item.href}
-                        className="text-gray-300 hover:bg-[#800000] hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                        className={classNames(
+                          item.current
+                            ? "bg-gray-900 text-white"
+                            : "text-gray-300 hover:bg-[#800000] hover:text-white",
+                          "rounded-md px-3 py-2 text-sm font-medium"
+                        )}
                       >
                         {item.name}
                       </Link>
@@ -81,7 +84,6 @@ const StudentLayout = () => {
                   </div>
                 </div>
 
-                {/* Right section */}
                 <div className="hidden md:flex items-center">
                   <button
                     type="button"
@@ -100,13 +102,13 @@ const StudentLayout = () => {
                     <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right bg-white rounded-md py-1 ring-1 ring-black/5 shadow-lg">
                       {userNavigation.map((item) => (
                         <MenuItem key={item.name}>
-                        <button
-                        onClick={() => handlenav(item.name)}
-                        className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          {item.name}
-                        </button>
+                          <button
+                            onClick={() => handleNav(item.name, item.href)}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                          >
+                            {item.name}
+                          </button>
                         </MenuItem>
-
                       ))}
                     </MenuItems>
                   </Menu>
@@ -128,45 +130,52 @@ const StudentLayout = () => {
 
             {/* Mobile menu panel */}
             <DisclosurePanel className="md:hidden px-2 pt-2 pb-3 space-y-1">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-[#800000] hover:text-white text-center w-full"
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {({ close }) => (
+                <>
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={close}
+                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-[#800000] hover:text-white text-center w-full"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
 
-              {/* Mobile view: Notification icon and Profile menu */}
-              <div className="flex items-center mt-4 border-t border-gray-700 pt-4">
-                <button
-                  type="button"
-                  className="mr-4 rounded-full bg-transparent p-1 text-gray-300 hover:text-white"
-                >
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
-                <Menu as="div" className="relative">
-                  <MenuButton className="flex items-center text-sm">
-                    <img
-                      className="h-8 w-8 rounded-full"
-                     
-                    />
-                  </MenuButton>
-                  <MenuItems className="absolute z-10 mt-2 w-40 origin-top-right bg-white rounded-md py-1 ring-1 ring-black/5 shadow-lg">
-                    {userNavigation.map((item) => (
-                      <MenuItem key={item.name}>
-                        <Link
-                          to={item.href}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                          {item.name}
-                        </Link>
-                      </MenuItem>
-                    ))}
-                  </MenuItems>
-                </Menu>
-              </div>
+                  <div className="flex items-center mt-4 border-t border-gray-700 pt-4">
+                    <button
+                      type="button"
+                      className="mr-4 rounded-full bg-transparent p-1 text-gray-300 hover:text-white"
+                    >
+                      <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    </button>
+                    <Menu as="div" className="relative">
+                      <MenuButton className="flex items-center text-sm">
+                        <img
+                          className="h-8 w-8 rounded-full"
+                        
+                        />
+                      </MenuButton>
+                      <MenuItems className="absolute z-10 mt-2 w-40 origin-top-right bg-white rounded-md py-1 ring-1 ring-black/5 shadow-lg">
+                        {userNavigation.map((item) => (
+                          <MenuItem key={item.name}>
+                            <button
+                              onClick={() => {
+                                handleNav(item.name, item.href);
+                                close();
+                              }}
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                            >
+                              {item.name}
+                            </button>
+                          </MenuItem>
+                        ))}
+                      </MenuItems>
+                    </Menu>
+                  </div>
+                </>
+              )}
             </DisclosurePanel>
           </>
         )}
@@ -181,4 +190,4 @@ const StudentLayout = () => {
   );
 };
 
-export default StudentLayout;
+export default AdminLayout;
