@@ -1,8 +1,7 @@
+
 # HostelMate – Complaint Management System for Hostels
 
 HostelMate is a real-time, full-stack complaint management system designed for hostel environments. It facilitates efficient communication between students, workers, and administrators to manage and resolve issues under a single interface.
-
----
 
 ## Features
 
@@ -46,11 +45,15 @@ hostelmate/
 │   ├── pages/
 │   ├── routes/
 │   └── ...
-├── backend/
-│   ├── student-api/        # Microservice: student operations
-│   ├── worker-api/         # Microservice: worker operations
-│   ├── admin-api/          # Microservice: admin operations
-│   └── shared/             # Auth, DB utils, middlewares
+├── backend/                # Node.js backend
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── seed.js
+│   ├── server.js
+│   └── .env
 └── README.md
 ```
 
@@ -70,31 +73,20 @@ hostelmate/
 
 ```bash
 git clone git@github.com:YOUR_USERNAME/hostelmate.git
-```
-
-2. Navigate to the project directory:
-
-```bash
 cd hostelmate
 ```
 
-3. Install frontend dependencies:
+2. Install frontend dependencies:
 
 ```bash
 cd frontend
 npm install
 ```
 
-4. Install backend dependencies:
+3. Install backend dependencies:
 
 ```bash
-cd ../backend/student-api
-npm install
-
-cd ../worker-api
-npm install
-
-cd ../admin-api
+cd ../backend
 npm install
 ```
 
@@ -107,16 +99,10 @@ cd frontend
 npm run dev
 ```
 
-Start backend services:
+Start the backend:
 
 ```bash
-cd backend/student-api
-npm run dev
-
-cd ../worker-api
-npm run dev
-
-cd ../admin-api
+cd backend
 npm run dev
 ```
 
@@ -133,9 +119,10 @@ npm run dev
 ```env
 MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/hostelmate
 JWT_SECRET=your_jwt_secret
+PORT=5000
 ```
 
-4. Start backend services using PM2:
+4. Start backend using PM2:
 
 ```bash
 pm2 start server.js --name hostelmate-backend
@@ -143,12 +130,16 @@ pm2 save
 pm2 startup
 ```
 
-5. Ensure the EC2 security group allows your backend port and any HTTP/HTTPS traffic.
+5. Ensure the EC2 security group allows the backend port (e.g., 5000) and HTTP/HTTPS traffic.
+
+---
 
 ### Database (MongoDB Atlas)
 
 * Use MongoDB Atlas cluster for production.
 * Configure database user credentials and whitelist IPs (EC2 server IP and local IP for testing).
+
+---
 
 ### Frontend (Vercel)
 
@@ -156,7 +147,7 @@ pm2 startup
 2. Import the project into Vercel and configure environment variables:
 
 ```
-VITE_API_URL=http://<your-ec2-ip>:<backend-port>
+VITE_API_URL=http://<your-ec2-ip>:5000
 ```
 
 3. Deploy; Vercel will provide the frontend URL.
