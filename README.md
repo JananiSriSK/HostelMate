@@ -1,7 +1,3 @@
-Here’s a **fully updated, professional README** for your HostelMate project, reflecting your deployment plan with **MongoDB Atlas, backend on EC2, frontend on Vercel**, and formalized content:
-
----
-
 # HostelMate – Complaint Management System for Hostels
 
 HostelMate is a real-time, full-stack complaint management system designed for hostel environments. It facilitates efficient communication between students, workers, and administrators to manage and resolve issues under a single interface.
