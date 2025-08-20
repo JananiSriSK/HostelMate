@@ -4,47 +4,44 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const DashboardHome = () => {
-  const navigate  = useNavigate();
-  const[announcements,setAnnouncements] = useState([]);
+  const navigate = useNavigate();
+  const [announcements, setAnnouncements] = useState([]);
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
-  if (!token) {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token) {
       navigate("/");
-  }
-  else if(role === 'worker')
-  {
-  navigate('/worker');
-  }
-  else if(role === 'admin')
-  {
-    navigate('/admin');
-  }
+    } else if (role === "worker") {
+      navigate("/worker");
+    } else if (role === "admin") {
+      navigate("/admin");
+    }
   }, []);
 
   useEffect(() => {
     const fetchComplaints = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const response = await axios.get("http://localhost:5000/api/admin-announcement", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/admin-announcement`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-            const announcement = Object.values(response.data);
-            console.log(announcement);
+        const announcement = Object.values(response.data);
+        console.log(announcement);
 
-            setAnnouncements(announcement);
-           
-        } catch (error) {
-            console.error("Error fetching complaints:", error);
-        }
+        setAnnouncements(announcement);
+      } catch (error) {
+        console.error("Error fetching complaints:", error);
+      }
     };
     fetchComplaints();
-}, []);
-
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -58,16 +55,14 @@ const DashboardHome = () => {
           feedback, and stay informed.
         </p>
       </div>
-      
+
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold text-[#a80000] mb-4">
           Announcements
         </h2>
         <ol className="list-disc list-inside text-gray-700 space-y-2">
-          {announcements.map((announce)=>(
-            <li key={announce._id}>
-                {announce.announcement}
-            </li>
+          {announcements.map((announce) => (
+            <li key={announce._id}>{announce.announcement}</li>
           ))}
         </ol>
       </div>

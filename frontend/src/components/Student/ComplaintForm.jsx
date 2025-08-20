@@ -11,12 +11,10 @@ const ComplaintForm = () => {
     const role = localStorage.getItem("role");
     if (!token) {
       navigate("/");
-    }
-    else if (role === 'worker') {
-      navigate('/worker');
-    }
-    else if (role === 'admin') {
-      navigate('/admin');
+    } else if (role === "worker") {
+      navigate("/worker");
+    } else if (role === "admin") {
+      navigate("/admin");
     }
   }, []);
 
@@ -45,7 +43,7 @@ const ComplaintForm = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/complaints",
+        `${import.meta.env.VITE_API_URL}/api/complaints`,
         complaintData,
         {
           headers: {
@@ -57,25 +55,26 @@ const ComplaintForm = () => {
 
       console.log("Complaint submitted successfully:", response.data);
       // alert("Complaint submitted successfully!");
-      toast.success('Complaint submitted successfully!', {
+      toast.success("Complaint submitted successfully!", {
         duration: 4000,
-        position: 'top-right', style: {
-          marginTop: '50px',
-        }
+        position: "top-right",
+        style: {
+          marginTop: "50px",
+        },
       });
       setIssueCategory("");
       setLocation("");
       setDescription("");
       setPriority("Low");
-      navigate('/student/my-complaints')
-
+      navigate("/student/my-complaints");
     } catch (error) {
       console.error("Complaint submission error:", error.response || error);
-      toast.error('Enter valid details!', {
+      toast.error("Enter valid details!", {
         duration: 4000,
-        position: 'top-right', style: {
-          marginTop: '50px',
-        }
+        position: "top-right",
+        style: {
+          marginTop: "50px",
+        },
       });
     }
   };
@@ -91,7 +90,10 @@ const ComplaintForm = () => {
           <form className="grid gap-4" onSubmit={handleSubmit}>
             {/* Issue Category */}
             <div className="grid gap-2">
-              <label htmlFor="issueCategory" className="text-gray-700 font-medium">
+              <label
+                htmlFor="issueCategory"
+                className="text-gray-700 font-medium"
+              >
                 Issue Category
               </label>
               <select
@@ -129,7 +131,10 @@ const ComplaintForm = () => {
 
             {/* Description */}
             <div className="grid gap-2">
-              <label htmlFor="description" className="text-gray-700 font-medium">
+              <label
+                htmlFor="description"
+                className="text-gray-700 font-medium"
+              >
                 Description
               </label>
               <textarea
@@ -169,7 +174,6 @@ const ComplaintForm = () => {
             </button>
           </form>
         </div>
-
       </div>
     </div>
   );

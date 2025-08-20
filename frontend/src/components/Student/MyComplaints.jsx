@@ -1,40 +1,38 @@
 import React, { useEffect, useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const MyComplaints = () => {
-
   const navigate = useNavigate();
 
-  const  [complaints,setComplaints] = useState([]);
+  const [complaints, setComplaints] = useState([]);
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
-  if (!token) {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token) {
       navigate("/");
-  }
-  else if(role === 'worker')
-  {
-  navigate('/worker');
-  }
-  else if(role === 'admin')
-  {
-    navigate('/admin');
-  }
+    } else if (role === "worker") {
+      navigate("/worker");
+    } else if (role === "admin") {
+      navigate("/admin");
+    }
   }, []);
 
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/api/complaints/student", {
-          headers: {
-            Authorization: `Bearer ${token}`
+        const response = await axios.get(
+          "`${import.meta.env.VITE_API_URL}/api/complaints/student",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-  
+        );
+
         const complaintsArray = Object.values(response.data);
         console.log(response.data);
 
@@ -43,36 +41,36 @@ const MyComplaints = () => {
         console.error("Error fetching complaints:", error);
       }
     };
-  
+
     fetchComplaints();
   }, []);
-  
 
-  const [rating, setRating] = useState('');
-  const [comment, setComment] = useState('');
-  const[isfeed,setIsFeed] = useState(false);
+  const [rating, setRating] = useState("");
+  const [comment, setComment] = useState("");
+  const [isfeed, setIsFeed] = useState(false);
 
-  const handleSubmit = async(e, id) => {
+  const handleSubmit = async (e, id) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`http://localhost:5000/api/complaints/${id}/feedback`,
-        {rating:rating,
-        comment:comment},
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/complaints/${id}/feedback`,
+        { rating: rating, comment: comment },
         {
-          headers:
-          {
-            Authorization:`Bearer ${token}`
-          }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      )
+      );
       // console.log("Feedback for complaint ID");
       alert("Thank you for your feedback!");
-      toast.success('Thank you for your feedback!', {duration: 4000,
-        position: 'top-right', style: {
-          marginTop: '50px',
-        }
-      });  
+      toast.success("Thank you for your feedback!", {
+        duration: 4000,
+        position: "top-right",
+        style: {
+          marginTop: "50px",
+        },
+      });
       setComment("");
       setRating("");
       setIsFeed(false);
@@ -80,7 +78,7 @@ const MyComplaints = () => {
       console.log(error);
     }
   };
-  const [current,setCurrent] = useState('');
+  const [current, setCurrent] = useState("");
   const toggleForm = (id) => {
     setCurrent(id);
     setIsFeed(!isfeed);

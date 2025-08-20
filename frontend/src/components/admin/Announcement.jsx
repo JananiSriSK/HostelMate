@@ -16,7 +16,7 @@ const Announcement = () => {
         const fetchComplaints = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get("http://localhost:5000/api/admin-announcement", {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin-announcement`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -38,7 +38,7 @@ const Announcement = () => {
 
         const token = localStorage.getItem("token");
         try {
-            const response = await axios.delete(`http://localhost:5000/api/admin-announcement/${id}`,
+            const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin-announcement/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -62,7 +62,7 @@ const Announcement = () => {
 
         const token = localStorage.getItem("token");
         try {
-            const response = await axios.post(`http://localhost:5000/api/admin-announcement`,
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin-announcement`,
                 { announcement: addnew },
                 {
                     headers: {
@@ -89,7 +89,7 @@ const Announcement = () => {
 
         const token = localStorage.getItem("token");
         try {
-            const response = await axios.put(`http://localhost:5000/api/admin-announcement/${id}`,
+            const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin-announcement/${id}`,
                 { announcement: editText },
                 {
                     headers: {

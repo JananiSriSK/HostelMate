@@ -1,5 +1,3 @@
-
-
 // import React, { useState } from "react";
 // import { Link } from "react-router-dom";
 // import cegImage from "../../assets/ceg.jpg";
@@ -18,7 +16,7 @@
 //         e.preventDefault();
 //         setLoading(true);
 //         try {
-//             await axios.post("http://localhost:5000/api/auth/forgot-password", { email });
+//             await axios.post("`${import.meta.env.VITE_API_URL}/api/auth/forgot-password", { email });
 //             toast.success("OTP sent to your email",
 //                 {
 //                     duration: 4000,
@@ -36,7 +34,7 @@
 //         e.preventDefault();
 //         setLoading(true);
 //         try {
-//             await axios.post("http://localhost:5000/api/auth/reset-password", {
+//             await axios.post("`${import.meta.env.VITE_API_URL}/api/auth/reset-password", {
 //                 email,
 //                 otp,
 //                 newPassword,
@@ -114,7 +112,6 @@
 
 // export default ForgotPassword;
 
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import cegImage from "../../assets/ceg.jpg";
@@ -128,16 +125,25 @@ const ForgotPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/auth/forgot-password", { email });
-      toast.success("OTP sent to your email", { duration: 4000, position: "top-right" });
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
+        { email }
+      );
+      toast.success("OTP sent to your email", {
+        duration: 4000,
+        position: "top-right",
+      });
       setStep(2);
     } catch (err) {
-      toast.error("Failed to send OTP", { duration: 4000, position: "top-right" });
+      toast.error("Failed to send OTP", {
+        duration: 4000,
+        position: "top-right",
+      });
       console.error(err);
     }
     setLoading(false);
@@ -147,14 +153,23 @@ const navigate = useNavigate();
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/auth/reset-password", {
-        email,
-        otp,
-        newPassword,
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/reset-password`,
+        {
+          email,
+          otp,
+          newPassword,
+        }
+      );
+      toast.success("Password reset successful", {
+        duration: 4000,
+        position: "top-right",
       });
-      toast.success("Password reset successful", { duration: 4000, position: "top-right" });
     } catch (err) {
-      toast.error("Invalid OTP or error resetting password", { duration: 4000, position: "top-right" });
+      toast.error("Invalid OTP or error resetting password", {
+        duration: 4000,
+        position: "top-right",
+      });
       console.error(err);
     }
     setLoading(false);
@@ -190,7 +205,9 @@ const navigate = useNavigate();
               {step === 1 ? (
                 <form onSubmit={handleSendOtp} className="space-y-5">
                   <div>
-                    <label className="block text-gray-600 mb-1">Email Address</label>
+                    <label className="block text-gray-600 mb-1">
+                      Email Address
+                    </label>
                     <input
                       type="email"
                       autoComplete="off"
@@ -205,7 +222,9 @@ const navigate = useNavigate();
                     <button
                       type="submit"
                       disabled={loading}
-                      className={`w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition duration-200 ${loading && "opacity-50 cursor-not-allowed"}`}
+                      className={`w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition duration-200 ${
+                        loading && "opacity-50 cursor-not-allowed"
+                      }`}
                     >
                       {loading ? "Sending..." : "Send OTP"}
                     </button>
@@ -225,7 +244,9 @@ const navigate = useNavigate();
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-600 mb-1">New Password</label>
+                    <label className="block text-gray-600 mb-1">
+                      New Password
+                    </label>
                     <input
                       type="password"
                       placeholder="Enter new password"
@@ -239,7 +260,9 @@ const navigate = useNavigate();
                     <button
                       type="submit"
                       disabled={loading}
-                      className={`w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition duration-200 ${loading && "opacity-50 cursor-not-allowed"}`}
+                      className={`w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition duration-200 ${
+                        loading && "opacity-50 cursor-not-allowed"
+                      }`}
                     >
                       {loading ? "Resetting..." : "Reset Password"}
                     </button>
@@ -249,7 +272,10 @@ const navigate = useNavigate();
 
               <p className="text-sm text-gray-600 text-center mt-6">
                 Go back to{" "}
-                <Link to="/" className="text-red-600 hover:underline font-medium">
+                <Link
+                  to="/"
+                  className="text-red-600 hover:underline font-medium"
+                >
                   Login
                 </Link>
               </p>

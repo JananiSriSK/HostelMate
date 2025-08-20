@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Disclosure,
   Menu,
-  MenuButton,   
+  MenuButton,
   MenuItem,
   MenuItems,
   DisclosureButton,
@@ -13,37 +13,36 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 const WorkerLayout = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
     if (!token) {
-        navigate("/");
+      navigate("/");
+    } else if (role === "student") {
+      navigate("/student");
+    } else if (role === "admin") {
+      navigate("/admin");
     }
-    else if(role === 'student')
-    {
-    navigate('/student');
-    }
-    else if(role === 'admin')
-    {
-      navigate('/admin');
-    }
-    }, []);
-    
+  }, []);
+
   const [complaints, setComplaints] = useState([]);
-  const [on,setOn] = useState(false);
+  const [on, setOn] = useState(false);
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/api/complaints/worker", {
-          headers: {
-            Authorization: `Bearer ${token}`
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/complaints/worker`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-  
+        );
+
         const complaintsArray = Object.values(response.data);
         console.log(response.data);
 
@@ -52,51 +51,47 @@ const WorkerLayout = () => {
         console.error("Error fetching complaints:", error);
       }
     };
-  
+
     fetchComplaints();
   }, [on]);
 
   const navigation = [{ name: "Dashboard", href: "/worker" }];
 
-  const userNavigation = [
-    { name: "Your Profile"},
-    { name: "Signout" },
-  ];
+  const userNavigation = [{ name: "Your Profile" }, { name: "Signout" }];
 
-  const handlenav = (name) =>{
-    if(name === "Signout")
-    {
+  const handlenav = (name) => {
+    if (name === "Signout") {
       localStorage.removeItem("user");
-      localStorage.removeItem("token");      
-      navigate('/');
+      localStorage.removeItem("token");
+      navigate("/");
+    } else {
+      navigate("/worker/profile");
     }
-     else{
-      navigate('/worker/profile');
-    }
-  }
+  };
 
-  const handleMarkComplete = async(id) => {
+  const handleMarkComplete = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.put(`http://localhost:5000/api/complaints/${id}/resolve`,
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/complaints/${id}/resolve`,
         {},
         {
-          headers:
-          {
-            Authorization:`Bearer ${token}`
-          }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      )
+      );
       console.log(response.data);
       setOn(!on);
-      toast.success('Complaint Resolved Successfully!', {duration: 4000,
-        position: 'top-right', style: {
-          marginTop: '50px',
-        }
-      });  
+      toast.success("Complaint Resolved Successfully!", {
+        duration: 4000,
+        position: "top-right",
+        style: {
+          marginTop: "50px",
+        },
+      });
     } catch (error) {
       console.log(error);
-      
     }
   };
 
@@ -140,21 +135,19 @@ const WorkerLayout = () => {
                   {/* Profile Dropdown */}
                   <Menu as="div" className="relative">
                     <MenuButton className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm">
-                      <img
-                        className="h-8 w-8 rounded-full"
-                      />
+                      <img className="h-8 w-8 rounded-full" />
                     </MenuButton>
                     <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right bg-white rounded-md py-1 ring-1 ring-black/5 shadow-lg">
-                    {userNavigation.map((item) => (
-                    <MenuItem key={item.name}>
-                        <button
-                        onClick={() => handlenav(item.name)}
-                        className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                        {item.name}
-                        </button>
-                    </MenuItem>
-                    ))}
+                      {userNavigation.map((item) => (
+                        <MenuItem key={item.name}>
+                          <button
+                            onClick={() => handlenav(item.name)}
+                            className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            {item.name}
+                          </button>
+                        </MenuItem>
+                      ))}
                     </MenuItems>
                   </Menu>
                 </div>
@@ -193,20 +186,18 @@ const WorkerLayout = () => {
                 </button>
                 <Menu as="div" className="relative">
                   <MenuButton className="flex items-center text-sm">
-                    <img
-                      className="h-8 w-8 rounded-full"
-                    />
+                    <img className="h-8 w-8 rounded-full" />
                   </MenuButton>
                   <MenuItems className="absolute z-10 mt-2 w-40 origin-top-right bg-white rounded-md py-1 ring-1 ring-black/5 shadow-lg">
-                  {userNavigation.map((item) => (
-                    <MenuItem key={item.name}>
+                    {userNavigation.map((item) => (
+                      <MenuItem key={item.name}>
                         <button
-                        onClick={() => handlenav(item.name)}
-                        className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => handlenav(item.name)}
+                          className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
-                        {item.name}
+                          {item.name}
                         </button>
-                    </MenuItem>
+                      </MenuItem>
                     ))}
                   </MenuItems>
                 </Menu>
@@ -218,52 +209,49 @@ const WorkerLayout = () => {
 
       {/* Main content */}
       <main className="pt-20 px-4 max-w-5xl mx-auto space-y-6">
-  {location.pathname === "/worker" && (
-    <>
-      <h1 className="text-2xl font-bold text-gray-800">
-        Complaints Received
-      </h1>
+        {location.pathname === "/worker" && (
+          <>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Complaints Received
+            </h1>
 
-      {complaints.map((complaint) => (
-        <div
-          key={complaint._id}
-          className="bg-white p-6 rounded-lg shadow-md space-y-4"
-        >
-          <div className="flex justify-between items-center">
-            <div>{complaint.photo}</div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800">
-                {complaint.description}
-              </h3>
-              <p className="text-sm text-gray-500">
-                Submitted on {complaint.createdAt.split("T")[0]}
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800`}
+            {complaints.map((complaint) => (
+              <div
+                key={complaint._id}
+                className="bg-white p-6 rounded-lg shadow-md space-y-4"
               >
-                {complaint.status}
-              </span>
-              {complaint.status === "Pending" && (
-                <button
-                  onClick={() => handleMarkComplete(complaint._id)}
-                  className="bg-[#a80000] text-white px-4 py-1 rounded hover:bg-[#800000] text-sm"
-                >
-                  Mark as Resolved
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      ))}
-    </>
-  )}
-
-  <Outlet /> {/* Only render profile here if not at root */}
-</main>
-
-
+                <div className="flex justify-between items-center">
+                  <div>{complaint.photo}</div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {complaint.description}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Submitted on {complaint.createdAt.split("T")[0]}
+                    </p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2 items-center">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800`}
+                    >
+                      {complaint.status}
+                    </span>
+                    {complaint.status === "Pending" && (
+                      <button
+                        onClick={() => handleMarkComplete(complaint._id)}
+                        className="bg-[#a80000] text-white px-4 py-1 rounded hover:bg-[#800000] text-sm"
+                      >
+                        Mark as Resolved
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+        <Outlet /> {/* Only render profile here if not at root */}
+      </main>
     </div>
   );
 };

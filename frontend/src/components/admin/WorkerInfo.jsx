@@ -35,7 +35,7 @@ const WorkerInfo = () => {
 
       const token = localStorage.getItem("token");
       try {
-        const response = await axios.get("http://localhost:5000/api/admin/workers",
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/workers`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -69,7 +69,7 @@ const WorkerInfo = () => {
     try {
       const token = localStorage.getItem("token");
           
-      const response = await axios.post("http://localhost:5000/api/admin/workers/add",
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/workers/add`,
       {
         name:newWorker.name,
         email:newWorker.email,
@@ -112,7 +112,7 @@ const WorkerInfo = () => {
       
       const token = localStorage.getItem("token");
       try {
-        const response = await axios.delete(`http://localhost:5000/api/admin/workers/${id}`,
+        const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/workers/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`

@@ -1,25 +1,24 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const UpdateProfile = () => {
-    const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
-    const [user, setUser] = useState({});
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [hostelblock, setHostelBlock] = useState('');
-  const [roomno, setRoomNO] = useState('');
-  const [id, setId] = useState('');
+  const [user, setUser] = useState({});
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [hostelblock, setHostelBlock] = useState("");
+  const [roomno, setRoomNO] = useState("");
+  const [id, setId] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userData = Object.values(JSON.parse(localStorage.getItem('user')));
+    const userData = Object.values(JSON.parse(localStorage.getItem("user")));
     console.log(userData);
-     
-    
+
     if (userData) {
       setName(userData[1].name || userData[0]);
       setEmail(userData[1].email || userData[2]);
@@ -30,64 +29,71 @@ const UpdateProfile = () => {
     }
   }, []);
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const updatedUser = {
-        ...user,
-        name,
-        phone,
-        email,
-        hostelblock,
-        roomno,
-        id
-      };
+      ...user,
+      name,
+      phone,
+      email,
+      hostelblock,
+      roomno,
+      id,
+    };
     const token = localStorage.getItem("token");
     try {
-        const response = await axios.put(`http://localhost:5000/api/updateprofile/student/${id}`,
-            { 
-                name: name,
-                email:email,
-                mobile:phone,
-                hostelBlock:hostelblock,
-                roomNumber:roomno
-             },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
-        console.log(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        alert("Profile Updated");
-        toast.success('Profile Updated!', {duration: 4000,
-          position: 'top-right', style: {
-            marginTop: '50px',
-          }
-        });  
-        navigate('/student');
-
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/updateprofile/student/${id}`,
+        {
+          name: name,
+          email: email,
+          mobile: phone,
+          hostelBlock: hostelblock,
+          roomNumber: roomno,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      alert("Profile Updated");
+      toast.success("Profile Updated!", {
+        duration: 4000,
+        position: "top-right",
+        style: {
+          marginTop: "50px",
+        },
+      });
+      navigate("/student");
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
   };
 
-  
   return (
     <div className="flex justify-center items-center min-h-screen bg-white">
       <div className="w-full  justify-center items-center max-w-xl bg-white rounded-xl shadow-md p-8">
-        <h2 className="text-3xl font-bold text-center mb-6 text-[#a80000]">Profile</h2>
+        <h2 className="text-3xl font-bold text-center mb-6 text-[#a80000]">
+          Profile
+        </h2>
         <form onSubmit={handleSubmit} className="grid gap-5">
           {/* Name */}
           <div>
-            <label className="block text-gray-700 font-semibold">Full Name</label>
+            <label className="block text-gray-700 font-semibold">
+              Full Name
+            </label>
             <input
               type="text"
               value={name}
               readOnly={!editMode}
               onChange={(e) => setName(e.target.value)}
-              className={`w-full border ${editMode ? 'border-gray-300' : 'border-transparent bg-gray-100'} rounded-md px-4 py-2 mt-1`}
+              className={`w-full border ${
+                editMode ? "border-gray-300" : "border-transparent bg-gray-100"
+              } rounded-md px-4 py-2 mt-1`}
             />
           </div>
 
@@ -105,37 +111,49 @@ const UpdateProfile = () => {
 
           {/* Phone */}
           <div>
-            <label className="block text-gray-700 font-semibold">Mobile Number</label>
+            <label className="block text-gray-700 font-semibold">
+              Mobile Number
+            </label>
             <input
               type="tel"
               value={phone}
               readOnly={!editMode}
               onChange={(e) => setPhone(e.target.value)}
-              className={`w-full border ${editMode ? 'border-gray-300' : 'border-transparent bg-gray-100'} rounded-md px-4 py-2 mt-1`}
+              className={`w-full border ${
+                editMode ? "border-gray-300" : "border-transparent bg-gray-100"
+              } rounded-md px-4 py-2 mt-1`}
             />
           </div>
 
           {/* Employee Number */}
           <div>
-            <label className="block text-gray-700 font-semibold">Hostel Block</label>
+            <label className="block text-gray-700 font-semibold">
+              Hostel Block
+            </label>
             <input
               type="text"
               value={hostelblock}
               readOnly={!editMode}
               onChange={(e) => setHostelBlock(e.target.value)}
-              className={`w-full border ${editMode ? 'border-gray-300' : 'border-transparent bg-gray-100'} rounded-md px-4 py-2 mt-1`}
+              className={`w-full border ${
+                editMode ? "border-gray-300" : "border-transparent bg-gray-100"
+              } rounded-md px-4 py-2 mt-1`}
             />
           </div>
 
           {/* Field */}
           <div>
-            <label className="block text-gray-700 font-semibold">Room number</label>
+            <label className="block text-gray-700 font-semibold">
+              Room number
+            </label>
             <input
               type="text"
               value={roomno}
               readOnly={!editMode}
               onChange={(e) => setRoomNO(e.target.value)}
-              className={`w-full border ${editMode ? 'border-gray-300' : 'border-transparent bg-gray-100'} rounded-md px-4 py-2 mt-1`}
+              className={`w-full border ${
+                editMode ? "border-gray-300" : "border-transparent bg-gray-100"
+              } rounded-md px-4 py-2 mt-1`}
             />
           </div>
 
